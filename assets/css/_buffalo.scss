@@ -131,3 +131,41 @@ table {
     }
   }
 }
+
+.header {
+  padding: 18px 0;
+  background-color: #F7F7F7;
+}
+
+
+.btn {
+  font-size: 16px;
+  color: #fff;
+  padding: 11px 23px;
+  &--blue {
+    background-color: #00ADEF;
+  }
+
+  &--gray {
+    background-color: #B3B5BA;
+    margin-right: 7px;
+  }
+}
+
+.form-group {
+  
+  & > label {
+    color: #343434;
+    font-size: 18px;
+  }
+
+  & > input {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    border-color: #B3B5BA;
+  }
+}
+
+.heading-3 {
+  color: #B3B5BA;
+}

@@ -1,0 +1,12 @@
+create_table("devices") {
+	t.Column("id", "uuid", {primary: true})
+	t.Column("manufacturer", "string", {})
+	t.Column("make", "string", {})
+	t.Column("model", "string", {})
+	t.Column("storage", "string", {})
+	t.Column("cost", "integer", {})
+	t.Column("operating_system", "string", {})
+	t.Column("image_url", "string", {})
+	t.Column("is_new", "bool", {})
+	t.Timestamps()
+}

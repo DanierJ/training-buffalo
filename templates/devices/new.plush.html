@@ -1,0 +1,8 @@
+<%= formFor(device, {action: devicesPath(), method: "POST"}) { %>
+  <%= partial("devices/header.html") %>
+    <div class="py-4 mb-2 container">
+      <h3 class="d-inline-block heading-3">New Device</h3>
+      </div>
+    <%= partial("devices/form.html") %>
+  <% } %>
+  

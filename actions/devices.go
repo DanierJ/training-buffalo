@@ -7,7 +7,6 @@ import (
 	"github.com/DanierJ/div_manager/models"
 	"github.com/gobuffalo/buffalo"
 	"github.com/gobuffalo/pop"
-	"github.com/gobuffalo/x/responder"
 )
 
 // Create handles the request to post a new device
@@ -33,31 +32,20 @@ func Create(c buffalo.Context) error {
 		return err
 	}
 
+	c.Set("osOptions", models.OS{"Android", "iOS", "Windows"})
+
 	if verrs.HasAny() {
-		return responder.Wants("html", func(c buffalo.Context) error {
-			// Setting errors
-			c.Set("errors", verrs)
+		// Setting errors
+		c.Set("errors", verrs)
 
-			c.Set("device", device)
-			c.Set("osOptions", models.OS{"Android", "iOS", "Windows"})
+		c.Set("device", device)
 
-			return c.Render(http.StatusUnprocessableEntity, r.HTML("/devices/new.plush.html"))
-
-		}).Wants("json", func(c buffalo.Context) error {
-			return c.Render(http.StatusUnprocessableEntity, r.JSON(verrs))
-		}).Respond(c)
+		return c.Render(http.StatusUnprocessableEntity, r.HTML("/devices/new.plush.html"))
 	}
 
-	return responder.Wants("html", func(c buffalo.Context) error {
-		c.Flash().Add("success", "Device created succesfully")
+	c.Flash().Add("success", "Device created succesfully")
 
-		c.Set("osOptions", models.OS{"Android", "iOS", "Windows"})
-
-		return c.Redirect(http.StatusSeeOther, "/devices/new")
-
-	}).Wants("json", func(c buffalo.Context) error {
-		return c.Render(http.StatusCreated, r.JSON(device))
-	}).Respond(c)
+	return c.Redirect(http.StatusSeeOther, "/devices/new")
 
 }
 

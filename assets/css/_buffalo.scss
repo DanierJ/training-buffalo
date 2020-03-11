@@ -169,3 +169,46 @@ table {
 .heading-3 {
   color: #B3B5BA;
 }
+
+.device-details {
+
+  padding-right: 0;
+
+  & >.heading-4 {
+    padding: 40px 0 20px;
+  }
+
+  &-bg {
+    height: 100vh;
+    background-color: #F7F7F7;
+  }
+
+  &-table th:first-child{
+    width: 20%;
+    padding-left: 0;
+  }
+
+  &-table th:nth-child(2) {
+    padding-right: 0;
+  }
+}
+
+table.table tbody tr td {
+  border-top: 0;
+  padding: 0;
+  font-size: 18px;
+  
+  &:first-child {
+    color: #343434a4;
+  }
+
+  &:nth-child(2) {
+    padding-left: 12px;
+  }
+}
+
+.b-group {
+  &--show {
+    padding: 17px 0;
+  }
+}

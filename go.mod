@@ -9,6 +9,7 @@ require (
 	github.com/gobuffalo/fizz v1.9.8 // indirect
 	github.com/gobuffalo/flect v0.2.1 // indirect
 	github.com/gobuffalo/genny v0.6.0 // indirect
+	github.com/gobuffalo/httptest v1.4.0
 	github.com/gobuffalo/mw-csrf v0.0.0-20190129204204-25460a055517
 	github.com/gobuffalo/mw-forcessl v0.0.0-20180802152810-73921ae7a130
 	github.com/gobuffalo/mw-i18n v0.0.0-20190129204410-552713a3ebb4

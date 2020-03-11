@@ -1,0 +1,68 @@
+<div class="text-right b-group b-group--show container">
+    <div class="dropdown">
+        <button class="btn btn--gray" type="button">Cancel</button>
+        <button class="btn btn--blue dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Edit Association
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <a class="dropdown-item" href="#">Action</a>
+          <a class="dropdown-item" href="#">Another action</a>
+          <a class="dropdown-item" href="#">Something else here</a>
+        </div>
+      </div>
+    <!-- <button class="btn btn--blue" role="submit" type="submit" id="submit-btn">Edit Association</button> -->
+  </div>
+
+<div class="device-details-bg">
+    <section class="device-details container">
+        <h4 class="heading-4">Device Details</h4>
+
+        <article class="device-details-overview">
+
+            <table class="table table-borderless device-details-table">
+                <thead>
+                <tr>
+                    <th scope="col"><h4 class="heading-4">Device Overview</h4></th>
+                    <th scope="col"><hr></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>Manufacturer</td>
+                    <td><%= device.Manufacturer %></td>
+                </tr>
+                <tr>
+                    <td>Make</td>
+                    <td><%= device.Make %></td>
+                </tr>
+                <tr>
+                    <td>Model</td>
+                    <td><%= device.Model %></td>
+                </tr>
+                <tr>
+                    <td>Storage</td>
+                    <td><%= device.Storage %></td>
+                </tr>
+                <tr>
+                    <td>Cost</td>
+                    <td><%= device.Cost %></td>
+                </tr>
+                <tr>
+                    <td>OS</td>
+                    <td><%= device.OS %></td>
+                </tr>
+                <tr>
+                    <td>Image URL</td>
+                    <td><%= device.ImageURL %></td>
+                </tr>
+                <tr>
+                    <td>Is New</td>
+                    <td><%= device.IsNew %></td>
+                </tr>
+                </tbody>
+            </table>
+        </article>
+
+
+    </section>
+</div>

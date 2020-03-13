@@ -1,6 +1,16 @@
 <header class="header">
     <div class="text-right b-group container">
-        <button class="btn btn--gray" type="button">Cancel</button>
-        <button class="btn btn--blue" role="submit" type="submit" id="submit-btn">New Device</button>
+        <a href="<%= if (device.Manufacturer == "") { %>
+          <%=devicesPath()%>
+          <% } else { %>
+            <%=devexDetailsPath({device_id: device.ID})%>
+      <% } %>" class="btn btn--gray" type="button">Cancel</a>
+        <button class="btn btn--blue" role="submit" type="submit" id="submit-btn">
+          <%= if (device.Manufacturer == "") { %>
+            New Device
+            <% } else { %>
+            Edit Device
+        <% } %>
+        </button>
       </div>
 </header>

@@ -1,11 +1,11 @@
 <div class="container">
-    <%= f.InputTag("Manufacturer") %>
-    <%= f.InputTag("Make") %>
-    <%= f.InputTag("Model") %>
-    <%= f.InputTag("Storage") %>
-    <%= f.InputTag("Cost") %>
-    <%= f.SelectTag("OS", {options: osOptions, label: "Operating System"}) %>
-    <%= f.InputTag("ImageURL") %>
-    <%= f.CheckboxTag("IsNew", {unchecked: false, label: "Is New"}) %>
+    <%= f.InputTag("Manufacturer", {value: device.Manufacturer}) %>
+    <%= f.InputTag("Make", {value: device.Make}) %>
+    <%= f.InputTag("Model", {value: device.Model}) %>
+    <%= f.InputTag("Storage", {value: device.Storage}) %>
+    <%= f.InputTag("Cost", {value: device.Cost}) %>
+    <%= f.SelectTag("OS", {options: osOptions, label: "Operating System", value: device.OS}) %>
+    <%= f.InputTag("ImageURL", {value: device.ImageURL}) %>
+    <%= f.CheckboxTag("IsNew", {unchecked: device.IsNew, label: "Is New"}) %>
 </div>
 

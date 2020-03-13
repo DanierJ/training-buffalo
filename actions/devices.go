@@ -3,6 +3,7 @@ package actions
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/DanierJ/div_manager/models"
 	"github.com/gobuffalo/buffalo"
@@ -46,7 +47,7 @@ func Create(c buffalo.Context) error {
 
 	c.Flash().Add("success", "Device created succesfully")
 
-	return c.Redirect(http.StatusCreated, "/devices/new")
+	return c.Redirect(http.StatusSeeOther, "/devices/%v/details", device.ID)
 
 }
 
@@ -120,7 +121,7 @@ func Update(c buffalo.Context) error {
 
 	c.Flash().Add("success", "Device updated succesfully")
 
-	return c.Redirect(http.StatusOK, "/devices/%v/details", device.ID)
+	return c.Redirect(http.StatusSeeOther, "/devices/%v/details", device.ID)
 
 }
 
@@ -134,12 +135,77 @@ func List(c buffalo.Context) error {
 
 	devices := &[]models.Device{}
 
-	if err := tx.All(devices); err != nil {
-		return err
+	m := c.Request().Form["search"]
+
+	field := ""
+
+	if len(m) > 0 {
+		field = m[0]
+	}
+
+	cost, err := strconv.ParseInt(field, 10, 64)
+
+	if err != nil {
+		cost = 0
+	}
+
+	if field != "" {
+		query := tx.Where("model = ? OR manufacturer = ? OR cost = ?", field, field, cost)
+		if err := query.All(devices); err != nil {
+			return err
+		}
+	} else {
+		if err := tx.All(devices); err != nil {
+			return err
+		}
 	}
 
 	c.Set("devices", devices)
 
 	return c.Render(http.StatusOK, r.HTML("/devices/list.plush.html"))
+
+}
+
+// Delete handles request to delete devices
+func Delete(c buffalo.Context) error {
+	tx, ok := c.Value("tx").(*pop.Connection)
+
+	if !ok {
+		return fmt.Errorf("No transaction found")
+	}
+
+	device := &models.Device{}
+
+	if err := tx.Find(device, c.Param("device_id")); err != nil {
+		return c.Error(http.StatusNotFound, err)
+	}
+
+	if err := tx.Destroy(device); err != nil {
+		return err
+	}
+	c.Flash().Add("success", "Device deleted succesfully")
+
+	return c.Redirect(http.StatusSeeOther, "/devices")
+}
+
+// Edit handle the request to render device to be edited
+func Edit(c buffalo.Context) error {
+	tx, ok := c.Value("tx").(*pop.Connection)
+
+	if !ok {
+		return fmt.Errorf("No transaction found")
+	}
+
+	device := &models.Device{}
+
+	if err := tx.Find(device, c.Param("device_id")); err != nil {
+
+		return c.Error(http.StatusNotFound, err)
+	}
+
+	c.Set("device", device)
+	c.Set("osOptions", models.OS{"Android", "iOS", "Windows"})
+
+	return c.Render(http.StatusOK, r.HTML("/devices/edit.plush.html"))
 
 }

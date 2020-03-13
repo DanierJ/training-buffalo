@@ -1,17 +1,19 @@
 <div class="text-right b-group b-group--show container">
     <div class="dropdown">
-        <button class="btn btn--gray" type="button">Cancel</button>
+        <a href="<%=devicesPath()%>" class="btn btn--gray" type="button">
+            <i class="fas fa-chevron-left"></i>
+            Back
+        </a>
         <button class="btn btn--blue dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="fas fa-pencil-alt"></i>
             Edit Association
         </button>
-        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          <a class="dropdown-item" href="#">Action</a>
-          <a class="dropdown-item" href="#">Another action</a>
-          <a class="dropdown-item" href="#">Something else here</a>
-        </div>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+            <a class="dropdown-item" href="<%=editDevexPath({device_id: device.ID}) %>">Edit</a>
+            <a class="dropdown-item bg-danger text-white" href="<%=devexPath({device_id: device.ID}) %>"" data-method="DELETE" data-confirm="Are you sure?">Delete</a>
+          </div>
       </div>
-    <!-- <button class="btn btn--blue" role="submit" type="submit" id="submit-btn">Edit Association</button> -->
-  </div>
+</div>
 
 <div class="device-details-bg">
     <section class="device-details container">
@@ -57,7 +59,13 @@
                 </tr>
                 <tr>
                     <td>Is New</td>
-                    <td><%= device.IsNew %></td>
+                    <td>
+                        <%= if (device.IsNew) { %>
+                            Yes
+                          <% } else { %>
+                            No
+                          <% } %>
+                    </td>
                 </tr>
                 </tbody>
             </table>

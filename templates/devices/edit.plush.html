@@ -1,0 +1,7 @@
+<%= formFor(device, {action: devexPath({device_id: device.ID}), method: "PUT"}) { %>
+    <%= partial("devices/header.html") %>
+      <div class="py-4 mb-2 container">
+        <h3 class="d-inline-block heading-3">Edit Device</h3>
+        </div>
+      <%= partial("devices/form.html") %>
+    <% } %>

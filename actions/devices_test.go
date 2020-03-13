@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
+	"strings"
 
 	"github.com/DanierJ/div_manager/models"
 	"github.com/gobuffalo/httptest"
@@ -28,7 +29,7 @@ func (as *ActionSuite) Test_Create_Device_With_Valid_Values() {
 	res := saveDevice(as, form, 0)
 
 	// assert that the response status code was 302 as.Equal(201, res.Code)
-	as.Equal(http.StatusCreated, res.Code)
+	as.Equal(http.StatusSeeOther, res.Code)
 
 	// retrieve the first Widget from the database
 	err := as.DB.First(d)
@@ -42,11 +43,7 @@ func (as *ActionSuite) Test_Create_Device_With_Valid_Values() {
 
 func (as *ActionSuite) Test_Update_Device_With_Valid_Values() {
 
-	addDevices(as, 1)
-
-	d := &models.Device{}
-	err := as.DB.First(d)
-	as.NoError(err)
+	devices := addDevices(as, 1)
 
 	form := url.Values{
 		"Manufacturer": []string{"Edited manufacturer"},
@@ -59,23 +56,20 @@ func (as *ActionSuite) Test_Update_Device_With_Valid_Values() {
 		"IsNew":        []string{"false"},
 	}
 
-	res := saveDevice(as, form, d.ID)
+	res := saveDevice(as, form, devices[0].ID)
 
 	updatedDevice := &models.Device{}
-	err = as.DB.First(updatedDevice)
+	err := as.DB.First(updatedDevice)
 	as.NoError(err)
 
-	as.Equal(http.StatusOK, res.Code)
+	as.Equal(http.StatusSeeOther, res.Code)
 
-	as.NotEqual(d.Manufacturer, updatedDevice.Manufacturer)
+	as.NotEqual(devices[0].Manufacturer, updatedDevice.Manufacturer)
 }
+
 func (as *ActionSuite) Test_Update_Device_With_Invalid_Values() {
 
-	addDevices(as, 1)
-
-	d := &models.Device{}
-	err := as.DB.First(d)
-	as.NoError(err)
+	devices := addDevices(as, 1)
 
 	form := url.Values{
 		"Manufacturer": []string{""},
@@ -88,15 +82,15 @@ func (as *ActionSuite) Test_Update_Device_With_Invalid_Values() {
 		"IsNew":        []string{"false"},
 	}
 
-	res := saveDevice(as, form, d.ID)
+	res := saveDevice(as, form, devices[0].ID)
 
 	updatedDevice := &models.Device{}
-	err = as.DB.First(updatedDevice)
+	err := as.DB.First(updatedDevice)
 	as.NoError(err)
 
 	as.Equal(http.StatusUnprocessableEntity, res.Code)
 
-	as.Equal(d.Manufacturer, updatedDevice.Manufacturer)
+	as.Equal(devices[0].Manufacturer, updatedDevice.Manufacturer)
 }
 
 func (as *ActionSuite) Test_Create_Device_With_Invalid_Values() {
@@ -139,7 +133,7 @@ func (as *ActionSuite) Test_Find_Existing_Device_Response() {
 	devices := addDevices(as, 1)
 
 	res := as.HTML("/devices/%v/details", devices[0].ID).Get()
-	as.Equal(200, res.Code)
+	as.Equal(http.StatusOK, res.Code)
 	as.Contains(res.Body.String(), devices[0].Manufacturer)
 }
 
@@ -167,6 +161,56 @@ func (as *ActionSuite) Test_Find_All_Devices() {
 
 }
 
+func (as *ActionSuite) Test_Delete_Existing_Device() {
+	devices := addDevices(as, 1)
+	res := as.HTML("/devices/%v", devices[0].ID).Delete()
+	as.Equal(http.StatusSeeOther, res.Code)
+
+	res = as.HTML("/devices/%v/details", devices[0].ID).Get()
+
+	as.Equal(http.StatusNotFound, res.Code)
+}
+
+func (as *ActionSuite) Test_Delete_Non_Existing_Device() {
+	fakeID := uuid.Must(uuid.NewV4())
+	res := as.HTML("/devices/%v", fakeID).Delete()
+	as.Equal(http.StatusNotFound, res.Code)
+}
+
+func (as *ActionSuite) Test_Edit_Existing_Device() {
+	devices := addDevices(as, 1)
+
+	res := as.HTML("/devices/%v/edit", devices[0].ID).Get()
+
+	as.Equal(http.StatusOK, res.Code)
+	as.Contains(res.Body.String(), devices[0].Manufacturer)
+}
+
+func (as *ActionSuite) Test_Edit_Non_Existing_Device() {
+	fakeID := uuid.Must(uuid.NewV4())
+	res := as.HTML("/devices/%v/edit", fakeID).Get()
+
+	as.Equal(http.StatusNotFound, res.Code)
+
+}
+
+func (as *ActionSuite) Test_Search_Devices_By_Field() {
+
+	devices := addDevices(as, 3)
+
+	name := devices[2].Manufacturer
+
+	res := as.HTML("/devices/?search=" + name).Get()
+
+	as.Equal(http.StatusOK, res.Code)
+
+	as.Contains(res.Body.String(), name)
+
+	as.Equal(0, strings.Count(res.Body.String(), devices[0].Manufacturer))
+	as.Equal(0, strings.Count(res.Body.String(), devices[1].Manufacturer))
+
+}
+
 func saveDevice(as *ActionSuite, f url.Values, id interface{}) *httptest.Response {
 
 	switch v := id.(type) {
@@ -191,7 +235,7 @@ func addDevices(as *ActionSuite, count int) []models.Device {
 	}
 
 	for i := 0; i < count; i++ {
-		devices = append(devices, models.Device{Manufacturer: "Manufacturer #" + strconv.Itoa(i+1), Make: "Make #" + strconv.Itoa(i+1), Model: "Model #" + strconv.Itoa(i+1), Storage: "Storage #" + strconv.Itoa(i+1), Cost: int64(i + 1*10), OS: "Android", ImageURL: "www", IsNew: true})
+		devices = append(devices, models.Device{Manufacturer: "Manufacturer" + strconv.Itoa(i+1), Make: "Make #" + strconv.Itoa(i+1), Model: "Model #" + strconv.Itoa(i+1), Storage: "Storage #" + strconv.Itoa(i+1), Cost: int64(i + 1*10), OS: "Android", ImageURL: "www", IsNew: true})
 
 		as.DB.Create(&devices[i])
 

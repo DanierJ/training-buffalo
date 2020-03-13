@@ -1,3 +1,50 @@
-<%= for (device) in devices { %>
-    <p><%= device.Model %></p>
-  <% } %>
+<div class="text-right b-group b-group--show container">
+  <a class="btn btn--blue" href="<%= newDevicesPath()%>" id="submit-btn">New Device Type</a>
+</div>
+
+
+<div class="device-list-bg">
+  <section class="device-list container">
+    <div class="device-list-info d-flex justify-content-between align-items-end">
+      <div class="device-list-count"><span><%= len(devices) %></span> Device Types</div>
+      <form action="<%=devicesPath()%>"  class="device-list-search d-flex align-items-center justify-content-center">
+        <label for="search">
+          <i class="fas fa-search device-list-search-icon"></i>
+        </label>
+        <input type="search" placeholder="Search (e.g. by name)" id="search" name="search">
+      </form>
+    </div>
+    <table class="table table-bordered device-list-table">
+      <thead>
+      <tr>
+          <th scope="col">Device Name &nbsp;<i class="fas fa-sort"></i></th>
+          <th scope="col">Manufacturer &nbsp;<i class="fas fa-sort"></i></th>
+          <th scope="col">Cost &nbsp;<i class="fas fa-sort"></i></th>
+          <th scope="col"></th>
+      </tr>
+      </thead>
+      <tbody>
+      <%= for (device) in devices { %>
+          <tr>
+              <td><a href="<%=devexDetailsPath({device_id: device.ID})%>"> <%= device.Model %></a></td>
+              <td><%= device.Manufacturer %></td>
+              <td>$ <%= device.Cost %></td>
+              <td>
+                <div class="dropdown">
+                  <a class="text-dark btn-white dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    ...
+                  </a>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                    <a class="dropdown-item" href="<%=devexDetailsPath({device_id: device.ID})%>">Details</a>
+                    <a class="dropdown-item" href="<%=editDevexPath({device_id: device.ID}) %>">Edit</a>
+                    <a class="dropdown-item bg-danger text-white" href="<%=devexPath({device_id: device.ID}) %>"" data-method="DELETE" data-confirm="Are you sure?">Delete</a>
+                  </div>
+                </div>
+              </td>
+          </tr>
+      <% } %>
+      </tbody>
+  </table>
+
+  </section>
+</div>

@@ -135,13 +135,7 @@ func List(c buffalo.Context) error {
 
 	devices := &[]models.Device{}
 
-	m := c.Request().Form["search"]
-
-	field := ""
-
-	if len(m) > 0 {
-		field = m[0]
-	}
+	field := c.Param("search")
 
 	cost, err := strconv.ParseInt(field, 10, 64)
 

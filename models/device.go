@@ -21,6 +21,8 @@ type Device struct {
 	OS           string    `json:"os" db:"operating_system"`
 	ImageURL     string    `json:"image_url" db:"image_url"`
 	IsNew        bool      `json:"is_new" db:"is_new"`
+	UserID       uuid.UUID `json:"user_id" db:"user_id"`
+	User         User      `json:"user" belongs_to:"user"`
 	CreatedAt    time.Time `json:"created_at" db:"created_at"`
 	UpdatedAt    time.Time `json:"updated_at" db:"updated_at"`
 }

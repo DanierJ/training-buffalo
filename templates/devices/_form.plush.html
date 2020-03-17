@@ -7,5 +7,18 @@
     <%= f.SelectTag("OS", {options: osOptions, label: "Operating System", value: device.OS}) %>
     <%= f.InputTag("ImageURL", {value: device.ImageURL}) %>
     <%= f.CheckboxTag("IsNew", {unchecked: device.IsNew, label: "Is New"}) %>
+
+    <div class="form-group">
+        <label for="users">User:</label>
+        <select name="UserID" id="users" class="form-control">
+            <option value="nil">--- select user ---</option>
+            <%= for (user) in users { %>
+                <option value="<%=user.ID%>" <%= if (user.ID.String() == device.UserID.String()) { %> selected <% } %> >
+                    <%=user.Name%> <%=user.Lastname %>
+                </option>
+            <% } %>
+        </select>
+    </div>
+
 </div>
 

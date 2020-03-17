@@ -10,8 +10,8 @@ import (
 	"github.com/gobuffalo/pop"
 )
 
-// Create handles the request to post a new device
-func Create(c buffalo.Context) error {
+// CreateDevice handles the request to post a new device
+func CreateDevice(c buffalo.Context) error {
 	device := &models.Device{}
 
 	// Binding the values
@@ -24,6 +24,11 @@ func Create(c buffalo.Context) error {
 
 	if !ok {
 		return fmt.Errorf("no transaction found")
+	}
+
+	if err := tx.Find(&models.User{}, device.UserID); err != nil && device.UserID.Valid == true {
+
+		return c.Error(http.StatusNotFound, err) // should I return an err or set the id to null
 	}
 
 	// Validating send data
@@ -51,17 +56,31 @@ func Create(c buffalo.Context) error {
 
 }
 
-// New handles the request to render the create device view
-func New(c buffalo.Context) error {
+// NewDevice handles the request to render the create device view
+func NewDevice(c buffalo.Context) error {
 
 	c.Set("device", &models.Device{})
 	c.Set("osOptions", models.OS{"Android", "iOS", "Windows"})
 
+	tx, ok := c.Value("tx").(*pop.Connection)
+
+	if !ok {
+		return fmt.Errorf("no transaction found")
+	}
+
+	users := &[]models.User{}
+
+	if err := tx.All(users); err != nil {
+		return err
+	}
+
+	c.Set("users", users)
+
 	return c.Render(http.StatusOK, r.HTML("/devices/new.plush.html"))
 }
 
-// Show handles the request to get one device
-func Show(c buffalo.Context) error {
+// ShowDevice handles the request to get one device
+func ShowDevice(c buffalo.Context) error {
 	tx, ok := c.Value("tx").(*pop.Connection)
 
 	if !ok {
@@ -70,7 +89,7 @@ func Show(c buffalo.Context) error {
 
 	device := &models.Device{}
 
-	if err := tx.Find(device, c.Param("device_id")); err != nil {
+	if err := tx.Eager().Find(device, c.Param("device_id")); err != nil {
 
 		return c.Error(http.StatusNotFound, err)
 	}
@@ -81,8 +100,8 @@ func Show(c buffalo.Context) error {
 
 }
 
-// Update hanlde the rquest to update a device
-func Update(c buffalo.Context) error {
+// UpdateDevice hanlde the rquest to update a device
+func UpdateDevice(c buffalo.Context) error {
 	tx, ok := c.Value("tx").(*pop.Connection)
 
 	if !ok {
@@ -98,6 +117,10 @@ func Update(c buffalo.Context) error {
 	// Bind Todo to the html form elements
 	if err := c.Bind(device); err != nil {
 		return err
+	}
+
+	if err := tx.Find(&models.User{}, device.UserID); err != nil {
+		return c.Error(http.StatusNotFound, err)
 	}
 
 	// Validating send data
@@ -116,7 +139,7 @@ func Update(c buffalo.Context) error {
 
 		c.Set("device", device)
 
-		return c.Render(http.StatusUnprocessableEntity, r.HTML("/devices/new.plush.html"))
+		return c.Render(http.StatusUnprocessableEntity, r.HTML("/devices/edit.plush.html"))
 	}
 
 	c.Flash().Add("success", "Device updated succesfully")
@@ -125,8 +148,8 @@ func Update(c buffalo.Context) error {
 
 }
 
-// List handles request to list devices
-func List(c buffalo.Context) error {
+// ListDevice handles request to list devices
+func ListDevice(c buffalo.Context) error {
 	tx, ok := c.Value("tx").(*pop.Connection)
 
 	if !ok {
@@ -160,8 +183,8 @@ func List(c buffalo.Context) error {
 
 }
 
-// Delete handles request to delete devices
-func Delete(c buffalo.Context) error {
+// DeleteDevice handles request to delete devices
+func DeleteDevice(c buffalo.Context) error {
 	tx, ok := c.Value("tx").(*pop.Connection)
 
 	if !ok {
@@ -182,8 +205,8 @@ func Delete(c buffalo.Context) error {
 	return c.Redirect(http.StatusSeeOther, "/devices")
 }
 
-// Edit handle the request to render device to be edited
-func Edit(c buffalo.Context) error {
+// EditDevice handle the request to render device to be edited
+func EditDevice(c buffalo.Context) error {
 	tx, ok := c.Value("tx").(*pop.Connection)
 
 	if !ok {
@@ -192,11 +215,18 @@ func Edit(c buffalo.Context) error {
 
 	device := &models.Device{}
 
-	if err := tx.Find(device, c.Param("device_id")); err != nil {
+	if err := tx.Eager().Find(device, c.Param("device_id")); err != nil {
 
 		return c.Error(http.StatusNotFound, err)
 	}
 
+	users := &[]models.User{}
+
+	if err := tx.All(users); err != nil {
+		return err
+	}
+
+	c.Set("users", *users)
 	c.Set("device", device)
 	c.Set("osOptions", models.OS{"Android", "iOS", "Windows"})
 

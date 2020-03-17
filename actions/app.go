@@ -58,16 +58,21 @@ func App() *buffalo.App {
 		// Setup and use translations:
 		app.Use(translations())
 
-		app.GET("/", List)
+		app.GET("/", ListDevice)
 
-		app.GET("/devices/", List)
-		app.GET("/devices/new", New)
-		app.GET("/devices/{device_id}/edit", Edit)
-		app.GET("/devices/{device_id}/details", Show)
-		app.PUT("/devices/{device_id}", Update)
-		app.DELETE("/devices/{device_id}", Delete)
-		app.POST("/devices", Create)
+		app.GET("/devices", ListDevice)
+		app.GET("/devices/new", NewDevice)
+		app.GET("/devices/{device_id}/edit", EditDevice)
+		app.GET("/devices/{device_id}/details", ShowDevice)
+		app.PUT("/devices/{device_id}", UpdateDevice)
+		app.DELETE("/devices/{device_id}", DeleteDevice)
+		app.POST("/devices", CreateDevice)
 
+		app.GET("/users", ListUser)
+		app.GET("/users/{user_id}/details", ShowUser)
+		app.POST("/users", CreateUser)
+		app.PUT("/users/{user_id}", UpdateUser)
+		app.DELETE("/users/{user_id}", DeleteUser)
 		app.ServeFiles("/", assetsBox) // serve files from the public directory
 	}
 

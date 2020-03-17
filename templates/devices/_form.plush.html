@@ -13,7 +13,7 @@
         <select name="UserID" id="users" class="form-control">
             <option value="nil">--- select user ---</option>
             <%= for (user) in users { %>
-                <option value="<%=user.ID%>" <%= if (user.ID.String() == device.UserID.String()) { %> selected <% } %> >
+                <option value="<%=user.ID%>" <%= if (user.ID.String() == device.UserID.UUID.String()) { %> selected <% } %> >
                     <%=user.Name%> <%=user.Lastname %>
                 </option>
             <% } %>

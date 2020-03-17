@@ -45,7 +45,7 @@ func (as *ActionSuite) Test_Create_Device_With_Valid_Values_And_Existing_User() 
 	as.NotZero(d.ID)
 	// assert the Widget title was saved correctly
 	as.Equal("T manufacturer", d.Manufacturer)
-	as.Equal(users[0].ID, d.UserID)
+	as.Equal(users[0].ID, d.UserID.UUID)
 	// assert the redirect was sent to the place expected
 	as.Equal(fmt.Sprintf("/devices/%v/details", d.ID), res.Location())
 }
